@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Filter from "../../common/components/filter";
 import Search from "../../common/components/search";
+import useDebounce from "../../common/hooks/useDebounce";
 
 const sortByFilter = [
   { name: "Newest ", value: "created_at:desc" },
@@ -10,6 +11,8 @@ const sortByFilter = [
   { name: "Name • Z - A", value: "name:desc" },
   { name: "Price • Low to high", value: "price:asc" },
   { name: "Price • High to low", value: "price:desc" },
+  { name: "Rating • Low to high", value: "rating:asc" },
+  { name: "Rrice • High to low", value: "rating:desc" },
 ];
 const brands = [
   { name: "Brand A", value: 1 },
@@ -25,8 +28,38 @@ const categories = [
   { name: "Furniture", value: 5 },
 ];
 
-function ProductFilters({ filters, onFilterChange, onClearAllFilters }) {
+function ProductFilters({ initialFilters, onFilterChange, onClearAllFilters }) {
   const [isEmptyfilters, setIsEmptyFilters] = useState(true);
+  const [filters, setFilters] = useState({
+    category_ids: [],
+    brand_ids: [],
+    sort: [],
+    page: 1,
+    search: "",
+  });
+
+  const debouncedFilterChange = useDebounce(onFilterChange, 250);
+
+  useEffect(() => {
+    setFilters({...initialFilters})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+  useEffect(() => {
+    let isEmpty = true;
+    Object.keys(filters)?.forEach((key) => {
+      const value = filters?.[key];
+      if (
+        !!value?.length &&
+        key !== "page" &&
+        value?.[0] !== "date_created:desc"
+      ) {
+        isEmpty = false;
+      }
+    });
+
+    setIsEmptyFilters(isEmpty);
+  }, [filters]);
 
   const onFilter = (type, value, isSort = false) => {
     let selectedFilterArray = [];
@@ -47,26 +80,20 @@ function ProductFilters({ filters, onFilterChange, onClearAllFilters }) {
       selectedFilterArray = [value];
     }
 
-    onFilterChange(type, selectedFilterArray);
+    setFilters(prev =>({
+      ...prev,
+      [type]: selectedFilterArray
+    }))
+    debouncedFilterChange(type, selectedFilterArray);
   };
 
-  useEffect(() => {
-    let isEmpty = true;
-    Object.keys(filters)?.forEach((key) => {
-      const value = filters?.[key];
-      if (
-        !!value?.length &&
-        key !== "page" &&
-        value?.[0] !== "date_created:desc"
-      ) {
-        isEmpty = false;
-      }
-    });
-
-    setIsEmptyFilters(isEmpty);
-    // console.log(filters);
-    
-  }, [filters]);
+  const onSimplefilter = (type,value) => {
+    setFilters(prev => ({
+      ...prev,
+      [type]: value
+    }))
+    debouncedFilterChange(type, value)
+  }
 
   return (
     <div className="flex gap-3 flex-wrap justify-between">
@@ -97,13 +124,16 @@ function ProductFilters({ filters, onFilterChange, onClearAllFilters }) {
           }
         />
         {!isEmptyfilters && (
-          <button onClick={onClearAllFilters} className="hover:underline">
+          <button onClick={() => {
+            setFilters({})
+            onClearAllFilters()
+          }} className="hover:underline">
             Clear all
           </button>
         )}
       </div>
       <Search
-        onChange={(value) => onFilterChange('search', value)}
+        onChange={(value) => onSimplefilter("search", value)}
         value={filters?.search}
         placeholder="Search item"
       />
@@ -112,9 +142,9 @@ function ProductFilters({ filters, onFilterChange, onClearAllFilters }) {
 }
 
 ProductFilters.propTypes = {
-    filters: PropTypes.object, 
-    onFilterChange: PropTypes.func, 
-    onClearAllFilters: PropTypes.func
+  filters: PropTypes.object,
+  onFilterChange: PropTypes.func,
+  onClearAllFilters: PropTypes.func,
 };
 
 export default ProductFilters;

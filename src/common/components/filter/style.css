@@ -5,14 +5,54 @@
     animation-fill-mode: forwards;
     animation-delay: 0s;
     animation-direction: reverse;
- 
  }
  
  .animated-down {
     animation-name: modal-out;
-    animation-duration: 0.8s;
+    animation-duration: 0.7s;
     animation-timing-function: ease-out;
     animation-fill-mode: forwards;
     animation-delay: 0s;
     animation-direction: reverse;
  }
+
+ 
+@keyframes modal-out {
+   0% {
+      transform: translateY(100%);
+   }
+
+   100% {
+      transform: translateY(0%);
+   }
+}
+
+@-webkit-keyframes modal-out {
+   0% {
+      -webkit-transform: translateY(100%);
+   }
+
+   100% {
+      -webkit-transform: translateY(0%);
+   }
+}
+
+@keyframes modal-in {
+   0% {
+      transform: translateY(0%);
+   }
+
+   100% {
+      transform: translateY(100%);
+   }
+}
+
+@-webkit-keyframes modal-in {
+   0% {
+      -webkit-transform: translateY(0%);
+   }
+
+   100% {
+      -webkit-transform: translateY(100%);
+   }
+}

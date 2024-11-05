@@ -32,8 +32,6 @@ const Filter = ({
   };
 
   useEffect(() => {
-    //  if (isMobile) return
-
     document.addEventListener("mousedown", (e) => handleClickOutside(e));
     return () => {
       clearTimeout(timerFetching);
@@ -46,15 +44,15 @@ const Filter = ({
       setOpenContent(bool);
       setAnimate("up");
     };
-
+    
     if (!isMobile) {
       close();
     } else {
       if (!bool) {
         setAnimate("down");
-        timerFetching = setTimeout(() => {
+        setTimeout(() => {
           close();
-        }, 800);
+        }, 700);
       } else {
         close();
       }
@@ -103,19 +101,24 @@ const Filter = ({
         </div>
       </div>
       {openContent && (
-        <div 
-        className={cx({
-         [`w-fit absolute top-12 z-20 animated_${animate}`]: true,
-         "flex items-end z-60 w-full h-full bg-transparent top-[unset] bottom-0 left-0 backdrop-blur-sm": isMobile,
-        })}
-        role="presentation"
-        onClick={(e) => {
-         if(isMobile) onCloseContent()
-        }}
+        <div
+          className={cx({
+            [`w-fit absolute top-12 z-20`]: true,
+            "flex items-end z-60 w-full h-full bg-transparent top-[unset] bottom-0 left-0 backdrop-blur-sm":
+              isMobile,
+          })}
+          role="presentation"
+          onClick={(e) => {
+            e.stopPropagation()
+            if (isMobile) {
+              onSetOpenContent(!openContent);
+            }
+          }}
         >
           <div
             className={cx({
               [`flex flex-col w-full py-1 border rounded-lg h-fit max-h-[400px] overflow-y-auto bg-white`]: true,
+              [`animated-${animate}`]: isMobile,
             })}
             ref={contentRef}
           >
@@ -126,8 +129,9 @@ const Filter = ({
                 <div
                   key={index}
                   className="flex cursor-pointer gap-3 justify-between items-center px-3.5 py-2 group hover:bg-hover border-border"
-                  onClick={() => {
-                    onFilterChange(item.value);
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onFilterChange(item.value);                    
                     if (!isMultiplSelect) onCloseContent();
                   }}
                 >
@@ -160,6 +164,13 @@ const Filter = ({
   );
 };
 
-Filter.propTypes = {};
+Filter.propTypes = {
+  name: PropTypes.string,
+  data: PropTypes.array,
+  isMultiplSelect: PropTypes.bool,
+  selectedItems: PropTypes.array,
+  onFilterChange: PropTypes.func,
+  secondName: PropTypes.string,
+};
 
 export default Filter;

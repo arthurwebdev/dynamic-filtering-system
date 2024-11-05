@@ -13,11 +13,11 @@ export const initDataOperation = (filters) => {
   return async (dispatch,getState) => {
     dispatch(initDataStart());
     try {
+      let isFiltered = !!Object.keys(filters).length
       const data = await getData(filters);
-      
       // Simulate a delay
       setTimeout(async () => {
-        await dispatch(initDataCompleted(data));
+        await dispatch(initDataCompleted({...data,isFiltered}));
       }, 1000);
     } catch (error) {
       console.log(error);
@@ -39,18 +39,25 @@ export const filterDataOperation = (filters) => {
   };
 };
 
-export const fetchNextDataOperation = (filters) => {
+export const fetchNextDataOperation = (filters,callBack) => {
   return async (dispatch, getState) => {
-    dispatch(fetchNextDataStart());
-    try {
-      const data = await getData(filters);
-      // Simulate a delay
-      setTimeout(() => {
-        dispatch(fetchNextDataCompleted(data));
-      }, 1000);
-    } catch (error) {
-      dispatch(fetchNextDataFailed());
+    const {products: {products: {current_page, last_page},isFetchingNextData}} = getState()
+    if (current_page < last_page && !isFetchingNextData) {
+      let newFilters = { ...filters, page: current_page + 1 }
+      callBack(newFilters)
+      
+      dispatch(fetchNextDataStart());
+      try {
+        const data = await getData(newFilters);
+        // Simulate a delay
+        setTimeout(() => {
+          dispatch(fetchNextDataCompleted(data));
+        }, 1000);
+      } catch (error) {
+        dispatch(fetchNextDataFailed());
+      }
     }
+
   };
 };
 

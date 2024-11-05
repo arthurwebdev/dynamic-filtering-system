@@ -1,30 +1,7 @@
 export default class QueryParams {
-   static getParam(key = '', defaultValue = null) {
-       const parsedParams = QueryParams.getParsedSearchParams();
-       return parsedParams.get(key) || defaultValue;
-   }
-
    static getParsedSearchParams() {
        const querySearchParams = window.location.search;
        return new URLSearchParams(querySearchParams);
-   }
-
-   static setQueryParam(key, value) {
-       const params = QueryParams.getParsedSearchParams();
-       params.set(key, value);
-       QueryParams.updateURL(params);
-   }
-
-   static pushQueryParam(key, value) {
-       const params = QueryParams.getParsedSearchParams();
-       params.append(key, value);
-       QueryParams.updateURL(params);
-   }
-
-   static deleteQueryParam(key) {
-       const params = QueryParams.getParsedSearchParams();
-       params.delete(key);
-       QueryParams.updateURL(params);
    }
 
    static removeAllQueryParams() {

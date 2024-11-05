@@ -1,123 +1,20 @@
 
 const colors = {
-
-   // START SITE COLOR
-   'action': {
-      DEFAULT: '#231FFF',
-      12: '#231FFF1F',
-      hover: '#0400E5',
-      dark: '#6F6DE6',
-      'dark-12': '#6F6DE61F',
-      'dark-hover': '#4F4DD7',
-   },
-   'success': {
-      DEFAULT: '#4CCE1B',
-      12: '#4CCE1B1F',
-      dark: '#88CD60',
-      'dark-12': '#88CD601F',
-   },
-   'pending': {
-      DEFAULT: '#FFD439',
-      12: '#FFD4391F',
-      dark: '#F8D990',
-      'dark-12': '#F8D9901F',
-   },
-   'warning': {
-      DEFAULT: '#F79009',
-      12: '#F790091F',
-      dark: '#EDAB57',
-      'dark-12': '#EDAB571F',
-   },
-   'notes': {
-      DEFAULT: '#FBEDB6',
-   },
-   'error': {
-      DEFAULT: '#D92D20',
-      12: '#D92D201F',
-      dark: '#DB5E55',
-      // 'dark-12': '#CC665A1F',
-      'dark-12': '#4D211E',
-   },
-   'likes': {
-      DEFAULT: '#FF2480',
-      12: '#FF24801F',
-      dark: '#ED6BA1',
-      'dark-12': '#ED6BA11F',
-   },
-
-   // bg color
-
    'hover': {
       DEFAULT: '#F6F6FF',
       12: '#F6F6FF1F',
-      dark: '#181822',
-      'dark-12': '#1818221F',
    },
-
-
-   'panel': {
-      DEFAULT: '#FFFFFF',
-      12: '#FFFFFF1F',
-      dark: '#121212',
-      'dark-12': '#1212121F',
-   },
-
-   'major': {
-      DEFAULT: '#041527',
-      12: '#0415271F',
-      60: '#04152799',
-      20: '#04152733',
-      dark: '#FFFFFF',
-      'dark-12': '#FFFFFF',
-      'dark-20': '#FFFFFF33',
-   },
-   'secondary': {
-      DEFAULT: '#616784',
-      12: '#ECEDF0',
-      dark: '#E0E0E0',
-      'dark-12': '#E0E0E01F',
-   },
+   
    'placeholder': {
       DEFAULT: '#9BA1A9',
       12: '#9BA1A91F',
-      dark: '#A0A0A0',
-      'dark-12': '#A0A0A01F',
-   },
-   'disabled': {
-      DEFAULT: '#D0D5DD',
-      12: '#D0D5DD1F',
-      dark: '#6C6C6C',
-      'dark-12': '#6C6C6C1F',
    },
 
-   'border': {
+   'divider': {
       DEFAULT: '#F2F4F7',
-      12: '#F2F4F71F',
-      dark: '#434343',
-      'dark-12': '#4343431F',
    },
-
-   'grey': {
-      main: '#F9FAFB',
-      hover: '#EEEFF0',
-      'hover-dark': '#1C1C1C',
-      'hover-dark-60': '#1c1c1c99',
-   },
-   'black-field': '#2C2C2C',
-   'modal-cover': {
-      DEFAULT: 'rgba(238, 239, 240, 0.60)',
-      dark: 'rgba(29, 41, 57, 0.60)',
-   },
-
-   'note': {
-      DEFAULT: '#FBEDB6',
-      dark: '#493C14',
-   },
-   // end bg color
 
    'transparent': 'transparent',
-
-   // END SITE COLOR
 };
 
 module.exports = {

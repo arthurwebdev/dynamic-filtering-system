@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import QueryParams from "../../common/utils/QueryParams";
 import {
@@ -20,8 +20,7 @@ import {
 
 function Products() {
   const dispatch = useDispatch();
-
-  const [filters, setFilters] = useState({
+  let filtersRef = useRef({
     category_ids: [],
     brand_ids: [],
     sort: [],
@@ -35,13 +34,11 @@ function Products() {
   const isFetchingByFilter = useSelector(isFetchingByFilterSelector);
   const isFetchingNextData = useSelector(isFetchingNextDataSelector);
 
-  // console.log(products);
   useEffect(() => {
     initData();
-
-    document.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      document.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -49,27 +46,20 @@ function Products() {
   const initData = () => {
     let params = QueryParams.getAllQueryParams();
     let filters = params?.q || {};
-    setFilters({ ...filters });
+    filtersRef.current = filters;
     dispatch(initDataOperation(filters));
   };
 
   const handleScroll = () => {
     const { scrollHeight, clientHeight } = document.documentElement;
     let scrollTop = document.documentElement.scrollTop;
-    console.log(products);
 
     if (scrollHeight - scrollTop - clientHeight < 100) {
-      nextPage();
-    }
-  };
-
-  const nextPage = async () => {
-    let { current_page, last_page } = products;
-
-    if (current_page < last_page && !isFetchingNextData) {
-      let newFilters = { ...filters, page: current_page + 1 };
-      setFilters({ ...newFilters });
-      dispatch(fetchNextDataOperation(newFilters));
+      dispatch(
+        fetchNextDataOperation(filtersRef.current, (newFilters) => {
+          filtersRef.current = newFilters;
+        })
+      );
     }
   };
 
@@ -85,35 +75,31 @@ function Products() {
     }
   };
 
-  const onFilterChange = async (type, value) => {
+  const onFilterChange = useCallback((type, value) => {
     let params = {};
-
+  
     if (!value.length) {
-      let { [type]: _, ...newFilters } = filters;
+      let { [type]: _, ...newFilters } = filtersRef.current;
       params = { ...newFilters };
     } else {
       params = {
-        ...filters,
+        ...filtersRef.current,
         [type]: value,
       };
     }
-
-    setFilters({ ...params });
-    generateUrlQuery(params);
-
+    filtersRef.current = params;
     dispatch(filterDataOperation(params));
-  };
-
-  const onClearAllFilters = async () => {
-    let newFilters = {
-      page: 1,
-    };
-
+    generateUrlQuery(params);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+  const onClearAllFilters = useCallback(() => {
+    let newFilters = { page: 1 };
     generateUrlQuery(newFilters);
-    setFilters({ ...newFilters });
-
+    filtersRef.current = newFilters;
     dispatch(filterDataOperation(newFilters));
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isFetching) {
     return (
@@ -125,9 +111,10 @@ function Products() {
 
   return (
     <div className="p-6 flex flex-col gap-6">
+      <h1 className="mx-auto text-xl font-bold">Dynamic filtering system</h1>
       <ProductFilters
         onFilterChange={onFilterChange}
-        filters={filters}
+        initialFilters={filtersRef?.current}
         onClearAllFilters={onClearAllFilters}
       />
       {!isEmpty ? (
@@ -174,4 +161,4 @@ function Products() {
   );
 }
 
-export default Products
+export default Products;

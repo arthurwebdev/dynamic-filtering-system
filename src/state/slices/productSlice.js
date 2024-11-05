@@ -25,7 +25,8 @@ const productSlice = createSlice({
     },
     initDataCompleted(state, action) {
       const { payload } = action;
-      state.isEmpty = !payload?.data?.length;
+      
+      state[!payload?.isFiltered ? 'isEmpty' : 'isEmptyByfilter'] = !payload?.data?.length;
       state.isFetching = false;
       state.products = payload;
       state.products = payload;
@@ -57,7 +58,11 @@ const productSlice = createSlice({
   },
 });
 
-export const productsSelector = (state) => state.products.products;
+export const productsSelector = (state) => {
+  // console.log(state.products.products);
+  
+  return state.products.products
+};
 export const isEmptyByfilterSelector = (state) =>
   state.products.isEmptyByfilter;
 export const isEmptySelector = (state) => state.products.isEmpty;
